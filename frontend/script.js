@@ -22,7 +22,22 @@ if (signupBtn) {
       const username = document.getElementById("username").value.trim();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
-      if (!username || !password) return alert("Enter username & password");
+      if (!username || !email || !password) return alert("Enter username, email & password");
+
+            if (!username || !email || !password) {
+        return alert("Please fill all fields");
+      }
+
+      // Email format validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return alert("Please enter a valid email address");
+      }
+
+      if (password.length < 6) {
+        return alert("Password must be at least 6 characters long");
+      }
+
       const res = await fetch(`${API_URL}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
