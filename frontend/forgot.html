@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forgot Password</title>
+  <link rel="stylesheet" type="text/css" href="./styles.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="forgot">
+        <h2>Forgot Password</h2>
+        <input type="email" id="forgotEmail" placeholder="Enter your email" required />
+        <button id="forgotBtn">Send Reset Link</button>
+        <p id="forgotMessage"></p>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:6500";
+
+    document.getElementById("forgotBtn").addEventListener("click", async () => {
+      const email = document.getElementById("forgotEmail").value.trim();
+      const msg = document.getElementById("forgotMessage");
+      if (!email) return alert("Please enter your email");
+
+      msg.textContent = "Sending reset link...";
+      try {
+        const res = await fetch(`${API_URL}/api/auth/forgot-password`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        const data = await res.json();
+        msg.textContent = data.message || "Check your email for reset link.";
+      } catch (err) {
+        msg.textContent = "Error sending reset link. Try again.";
+      }
+    });
+  </script>
+</body>
+</html>

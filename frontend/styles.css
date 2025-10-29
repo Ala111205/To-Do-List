@@ -1,0 +1,280 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    transition: 0.3s ease;
+}
+
+:root {
+    --bg: #f4f4f4;
+    --text: #222;
+    --card: #fff;
+    --accent: #007bff;
+}
+
+.dark {
+    --bg: #181818;
+    --text: #fff;
+    --card: #242424;
+    --accent: #ffb400;
+}
+
+.container {
+    width: 100%;
+    min-height: 100vh;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* To-Do-container */
+.To-Do-container {
+    position: fixed;
+    max-width: 600px;
+    margin: 50px auto;
+    background: var(--card);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Title */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Input Section */
+.task-input {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.task-input input,
+.task-input select,
+.task-input button {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+#addBtn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#addBtn:hover {
+    opacity: 0.9;
+}
+
+/* Filters */
+.filters {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.filters button {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 8px 12px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.filters .active {
+    background: var(--accent);
+    color: #fff;
+}
+
+/* Task List */
+#taskList {
+    margin-top: 10px;
+    padding: 10px;
+    box-shadow: inset 0 0 5px 1px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    overflow-y: auto;
+    max-height: 300px;
+    transition: all 0.3s ease;
+}
+
+#taskList::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+#taskList:hover { cursor: grab; }
+
+
+#taskList.empty {
+  box-shadow: none;
+  padding: 0;
+  max-height: 0;
+}
+
+li {
+    background: var(--card);
+    margin: 8px 0;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 2px 1px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 5px solid var(--accent);
+    transition: 0.3s;
+}
+
+li:hover { cursor: grabbing; }
+
+li.completed {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+li.high { border-left-color: red; }
+li.medium { border-left-color: orange; }
+li.low { border-left-color: green; }
+
+/* Buttons */
+.actions button {
+    margin-left: 8px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#toggleTheme {
+    display: block;
+    margin: 20px auto 0;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.task-summary {
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: center;
+    color: #444;
+}
+
+/* Auth */
+.authIcon {
+    margin-bottom: 5px;
+    position: relative;
+    display: inline-block;
+    align-self: self-end;
+    filter: drop-shadow(0.2px 0.2px 1px);
+    font-size: 20px;
+}
+
+.fa-user {
+    margin-bottom: 5px;
+    color: var(--accent);
+    cursor: pointer;
+}
+
+.auth-tooltip {
+    visibility: hidden;
+    opacity: 0;
+    background-color: var(--card);
+    color: var(--text);
+    text-align: center;
+    padding: 6px 10px;
+    border-radius: 6px;
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    transition: opacity 0.3s;
+    font-size: 13px;
+    pointer-events: none;
+}
+
+.auth-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--card) transparent transparent transparent;
+}
+
+.authIcon a:hover + .auth-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+.authform, .forgot {
+    width: 100%;
+    max-width: 400px;
+    min-height: 280px;
+    --card: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 3px 0.5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.forgot {
+    min-height: 240px;
+}
+
+.authform input, .forgot input {
+    width: 80%;
+    max-width: 250px;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 0 1px 1px;
+}
+
+.authform button, .forgot button {
+    background: var(--accent);
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.authform button:hover {
+    opacity: 0.9;
+}
+
+.authform a {
+    text-decoration: none;
+    color: var(--accent)
+}

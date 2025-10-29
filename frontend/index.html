@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://kit.fontawesome.com/9885839914.js" crossorigin="anonymous"></script>
+  <title>To-Do List App</title>
+  <link rel="stylesheet" type="text/css" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="To-Do-container">
+        <h1>📝 My To-Do List</h1>
+
+        <div class="authIcon">
+          <a href="./signup.html"><i class="fa-solid fa-user"></i></a>
+          <span class="auth-tooltip">Please login to see your posts on any device.</span>
+        </div>
+
+        <div class="task-input">
+          <input type="text" id="taskInput" placeholder="Add a new task..." />
+          <select id="priority">
+              <option value="low">Low 🟢</option>
+              <option value="medium">Medium 🟡</option>
+              <option value="high">High 🔴</option>
+          </select>
+          <input type="date" id="dueDate" />
+          <button id="addBtn">Add</button>
+        </div>
+
+        <div class="filters">
+          <button data-filter="all" class="active">All</button>
+          <button data-filter="completed">Completed</button>
+          <button data-filter="pending">Pending</button>
+        </div>
+
+        <ul id="taskList"></ul>
+
+        <button id="toggleTheme">🌙 Dark Mode</button>
+
+        <div id="taskSummary" class="task-summary"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
