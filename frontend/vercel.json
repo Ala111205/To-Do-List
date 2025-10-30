@@ -4,11 +4,10 @@
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "*.css", "use": "@vercel/static" },
     { "src": "*.js", "use": "@vercel/static" },
-    { "src": "*.html", "use": "@vercel/static" },
-    { "src": "reset-password.html", "use": "@vercel/static" }
+    { "src": "*.html", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/reset-password/.*", "dest": "/reset-password.html" },
+    { "src": "/reset-password/.*", "dest": "/reset.html" },
     { "src": "/(.*)", "dest": "/$1" }
   ]
 }
