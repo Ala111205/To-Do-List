@@ -184,22 +184,25 @@ li.low { border-left-color: green; }
 /* Auth */
 .authIcon {
     margin-bottom: 5px;
-    position: relative;
-    display: inline-block;
-    align-self: self-end;
+    display: flex;
+    justify-content: space-between;
     filter: drop-shadow(0.2px 0.2px 1px);
     font-size: 20px;
 }
 
+.authIcon div .fa-user {
+    position: relative
+}
+
 .fa-user {
-    margin-bottom: 5px;
+    margin-top: 2px;
     color: var(--accent);
     cursor: pointer;
 }
 
 .auth-tooltip {
     visibility: hidden;
-    opacity: 0;
+    opacity: 1;
     background-color: var(--card);
     color: var(--text);
     text-align: center;
@@ -207,8 +210,7 @@ li.low { border-left-color: green; }
     border-radius: 6px;
     position: absolute;
     bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-53.2%);
     white-space: nowrap;
     transition: opacity 0.3s;
     font-size: 13px;
@@ -231,6 +233,10 @@ li.low { border-left-color: green; }
   opacity: 1;
 }
 
+.logoutBtn {
+    cursor: pointer;
+    transition: 0.3s;
+}
 
 .authform, .forgot {
     width: 100%;

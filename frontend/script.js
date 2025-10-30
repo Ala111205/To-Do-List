@@ -261,12 +261,7 @@ async function deleteTask(id) {
   } catch (err) {
     console.error("Delete error:", err);
   }
-}
-
-function logout() {
-  localStorage.removeItem("token");
-  window.location.href = "login.html";
-}
+} 
 
 addBtn.addEventListener("click", addTask);
 
@@ -291,12 +286,23 @@ if (toggleTheme) {
 if (token) fetchTasks();
 
 document.addEventListener("DOMContentLoaded", () => {
-  const authTooltip = document.querySelector(".auth-tooltip");
-  if (authTooltip) {
-    if (token) {
-      authTooltip.textContent = "Logged in — your tasks sync across devices.";
-    } else {
-      authTooltip.textContent = "Please login to see your tasks on any device.";
+  const logoutBtn = document.querySelector(".logoutBtn");
+  if (!logoutBtn) return;
+
+  logoutBtn.addEventListener("click", async () => {
+    try {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      sessionStorage.removeItem("token");
+
+      taskList.innerHTML = "";
+
+      alert("You have been logget out.")
+    } catch (err) {
+      console.error("Logout error:", err);
+      logoutBtn.disabled = false;
+      logoutBtn.classList.remove("logging-out");
+      alert("Logout failed");
     }
-  }
+  });
 });

@@ -13,8 +13,11 @@
         <h1>📝 My To-Do List</h1>
 
         <div class="authIcon">
-          <a href="./signup.html"><i class="fa-solid fa-user"></i></a>
-          <span class="auth-tooltip">Please login to see your posts on any device.</span>
+          <h3><i class="fa-regular fa-circle-left logoutBtn"></i></h3>
+          <div>
+            <a href="./signup.html"><i class="fa-solid fa-user"></i></a>
+            <span class="auth-tooltip">Please login to see your posts on any device.</span>
+          </div>
         </div>
 
         <div class="task-input">
@@ -34,7 +37,7 @@
           <button data-filter="pending">Pending</button>
         </div>
 
-        <ul id="taskList"></ul>
+        <ul id="taskList" class="empty"></ul>
 
         <button id="toggleTheme">🌙 Dark Mode</button>
 
