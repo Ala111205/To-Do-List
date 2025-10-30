@@ -1,4 +1,4 @@
-const API_URL = "https://to-do-list-22jb.onrender.com";
+const API_URL = "https://to-do-list-cde0.onrender.com";
 
 const taskInput = document.getElementById("taskInput");
 const addBtn = document.getElementById("addBtn");
