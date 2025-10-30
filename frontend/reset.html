@@ -18,30 +18,55 @@
 
   <script>
     const API_URL = "https://to-do-list-cde0.onrender.com";
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
-    const msg = document.getElementById("resetMessage");
 
-    if (!token) {
+    // Extract token from URL path
+    const token = window.location.pathname.split("/").pop();
+    const msg = document.getElementById("resetMessage");
+    const resetBtn = document.getElementById("resetBtn");
+
+    if (!token || token.length < 10) {
       msg.textContent = "Invalid or missing token.";
-      document.getElementById("resetBtn").disabled = true;
+      resetBtn.disabled = true;
     }
 
-    document.getElementById("resetBtn").addEventListener("click", async () => {
+    resetBtn.addEventListener("click", async () => {
       const password = document.getElementById("newPassword").value.trim();
-      if (!password) return alert("Enter your new password");
 
-      msg.textContent = "Resetting password...";
+      if (!password) {
+        msg.textContent = "⚠️ Please enter a new password.";
+        return;
+      }
+
+      if (password.length < 6) {
+        msg.textContent = "⚠️ Password must be at least 6 characters.";
+        return;
+      }
+
+      msg.textContent = "⏳ Resetting password...";
+      resetBtn.disabled = true;
+
       try {
         const res = await fetch(`${API_URL}/api/auth/reset-password/${token}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ password }),
         });
+
         const data = await res.json();
-        msg.textContent = data.message || "Password reset complete!";
+
+        if (res.ok) {
+          msg.textContent = "✅ Password reset successful. Redirecting...";
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 2000);
+        } else {
+          msg.textContent = `❌ ${data.message || "Failed to reset password."}`;
+          resetBtn.disabled = false;
+        }
       } catch (err) {
-        msg.textContent = "Error resetting password.";
+        console.error(err);
+        msg.textContent = "⚠️ Network error. Please try again.";
+        resetBtn.disabled = false;
       }
     });
   </script>
