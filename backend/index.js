@@ -6,7 +6,22 @@ const authRoutes = require("./routes/userRoute");
 const taskRoutes = require("./routes/taskRoute");
 
 const app = express();
-app.use(cors());
+
+const allowedOrigins = [
+  "https://to-do-list-three-chi-92.vercel.app",
+  "http://127.0.0.1:5502"                      
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error("Not allowed by CORS"));
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+}));
+
 app.use(express.json());
 
 mongoose.connect(`${process.env.MONGO_URI}/todoApp`)
