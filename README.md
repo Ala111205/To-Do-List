@@ -6,6 +6,7 @@ Built with a modular architecture for scalability, featuring password reset via 
 🌐 **Repository Link:** 👉 https://to-do-list-three-chi-92.vercel.app/
 
 🚀 **Features:-**
+
 🔹 **Core To-Do Features**
 
 ➕ Add, edit, and delete tasks dynamically
