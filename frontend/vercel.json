@@ -1,14 +1,10 @@
 {
   "version": 2,
-  "public": true,
+  "public": "frontend",
   "builds": [
-    { "src": "frontend/index.html", "use": "@vercel/static" },
-    { "src": "frontend/*.css", "use": "@vercel/static" },
-    { "src": "frontend/*.js", "use": "@vercel/static" },
-    { "src": "frontend/assets/**", "use": "@vercel/static" }
+    { "src": "frontend/**/*", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "frontend/$1" },
-    { "src": "/", "dest": "frontend/index.html" }
+    { "src": "/(.*)", "dest": "/frontend/$1" }
   ]
 }
