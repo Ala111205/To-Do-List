@@ -3,7 +3,7 @@
 A clean, interactive, and secure web-based To-Do List Application that helps users create, edit, and manage daily tasks — with authentication, token-based access, and persistent cloud storage.
 Built with a modular architecture for scalability, featuring password reset via email, secure JWT sessions, and a smooth, responsive UI.
 
-**Repository Link 👉** https://to-do-list-three-chi-92.vercel.app/
+**Live Demo 👉** https://to-do-list-three-chi-92.vercel.app/
 
 🚀 **Features:-**
 
