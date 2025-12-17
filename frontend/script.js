@@ -8,6 +8,7 @@ const dueDate = document.getElementById("dueDate");
 const filters = document.querySelectorAll(".filters button");
 const toggleTheme = document.getElementById("toggleTheme");
 const summary = document.getElementById("taskSummary");
+const loader = document.getElementById("loader");
 
 let tasks = [];
 let currentFilter = "all";
@@ -79,8 +80,18 @@ if (loginBtn) {
   });
 }
 
+function showLoader() {
+  loader.classList.remove("hidden");
+}
+
+function hideLoader() {
+  loader.classList.add("hidden");
+}
+
 async function fetchTasks() {
   try {
+    showLoader();
+
     if (!token) {
       // Load guest tasks from localStorage
       tasks = JSON.parse(localStorage.getItem("guestTasks")) || [];
@@ -102,11 +113,14 @@ async function fetchTasks() {
     renderTasks();
   } catch (err) {
     console.error("Error fetching tasks:", err);
+  } finally {
+    hideLoader(); 
   }
 }
 
 function renderTasks() {
   taskList.innerHTML = "";
+  
   const filteredTasks = tasks.filter(task => {
     if (currentFilter === "completed") return task.completed;
     if (currentFilter === "pending") return !task.completed;
@@ -196,17 +210,33 @@ async function addTask() {
 }
 
 async function toggleComplete(id) {
-  const task = tasks.find(t => t._id === id);
-  try {
-    await fetch(`${API_URL}/api/tasks/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ completed: !task.completed }),
-    });
-    fetchTasks();
-  } catch (err) {
-    console.error("Toggle error:", err);
+  // ✅ Guest user
+  if (!token) {
+    const guestTasks = JSON.parse(localStorage.getItem("guestTasks")) || [];
+    const task = guestTasks.find(t => t._id === id);
+    if (!task) return;
+
+    task.completed = !task.completed;
+    localStorage.setItem("guestTasks", JSON.stringify(guestTasks));
+    tasks = guestTasks;
+    renderTasks();
+    return;
   }
+
+  // ✅ Authenticated user
+  const task = tasks.find(t => t._id === id);
+  if (!task) return;
+
+  await fetch(`${API_URL}/api/tasks/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ completed: !task.completed }),
+  });
+
+  fetchTasks();
 }
 
 async function editTask(id) {
@@ -283,9 +313,11 @@ if (toggleTheme) {
   });
 }
 
-if (token) fetchTasks();
+// if (token) fetchTasks();
 
 document.addEventListener("DOMContentLoaded", () => {
+  fetchTasks();
+
   const logoutBtn = document.querySelector(".logoutBtn");
   if (!logoutBtn) return;
 

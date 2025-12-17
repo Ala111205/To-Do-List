@@ -3,17 +3,10 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const User = require("../models/user");
-const SibApiV3Sdk = require("sib-api-v3-sdk");
+const sendEmail = require("../utils/sendEmail");
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "sadtodo12345";
-
-// Setup Brevo client
-const client = SibApiV3Sdk.ApiClient.instance;
-const apiKey = client.authentications["api-key"];
-apiKey.apiKey = process.env.BREVO_API_KEY;
-
-const brevoEmailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
 // Signup route
 router.post("/signup", async (req, res) => {
@@ -53,8 +46,11 @@ router.post("/login", async (req, res) => {
 router.post("/forgot-password", async (req, res) => {
   try {
     const { email } = req.body;
+
     const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     const resetToken = crypto.randomBytes(32).toString("hex");
     const resetTokenHash = crypto
@@ -68,26 +64,25 @@ router.post("/forgot-password", async (req, res) => {
 
     const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-    // ✅ Send email using Brevo API
-    const sendSmtpEmail = {
-      sender: { email: process.env.BREVO_USER, name: "To-Do List App" },
-      to: [{ email: user.email, name: user.username || "User" }],
-      subject: "Password Reset Request",
-      htmlContent: `
+    const success = await sendEmail(
+      user.email,
+      "Password Reset Request",
+      `
         <p>Hello ${user.username || ""},</p>
-        <p>You requested to reset your password. Click below to reset it:</p>
-        <a href="${resetLink}" style="color: #007bff;">Reset Password</a>
-        <p>This link expires in <strong>15 minutes</strong>.</p>
-        <p>If you didn't request this, ignore this email.</p>
-      `,
-    };
+        <p>You requested to reset your password.</p>
+        <a href="${resetLink}">Reset Password</a>
+        <p>This link expires in 15 minutes.</p>
+      `
+    );
 
-    await brevoEmailApi.sendTransacEmail(sendSmtpEmail);
+    if (!success) {
+      return res.status(500).json({ message: "Email service failed" });
+    }
 
     res.json({ message: "Reset link sent to your email." });
   } catch (err) {
-    console.error("Error sending email:", err.message);
-    res.status(500).json({ message: "Failed to send reset email", error: err.message });
+    console.error("FORGOT PASSWORD ERROR:", err);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
