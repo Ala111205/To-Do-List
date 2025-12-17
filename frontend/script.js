@@ -78,19 +78,21 @@ if (loginBtn) {
 }
 
 function showLoader() {
+  if (!loader) return;
   loader.classList.remove("hidden");
 }
 
 function hideLoader() {
+  if (!loader) return;
   loader.classList.add("hidden");
 }
 
 async function fetchTasks() {
-  try {
-    showLoader();
+  if (!taskList) return;
+  showLoader();
 
+  try {
     if (!token) {
-      // Load guest tasks from localStorage
       tasks = JSON.parse(localStorage.getItem("guestTasks")) || [];
       renderTasks();
       return;
@@ -100,22 +102,21 @@ async function fetchTasks() {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    if (res.status === 401) {
-      summary.textContent = "🔒 Session expired. Please log in again.";
-      return;
+    if (!res.ok) {
+      throw new Error("Failed to fetch tasks");
     }
 
-    const data = await res.json();
-    tasks = data;
+    tasks = await res.json();
     renderTasks();
   } catch (err) {
     console.error("Error fetching tasks:", err);
   } finally {
-    hideLoader(); 
+    hideLoader();
   }
 }
 
 function renderTasks() {
+  if (!taskList) return;
   taskList.innerHTML = "";
 
   const filteredTasks = tasks.filter(task => {
@@ -207,33 +208,30 @@ async function addTask() {
 }
 
 async function toggleComplete(id) {
-  // Guest user
-  if (!token) {
-    const guestTasks = JSON.parse(localStorage.getItem("guestTasks")) || [];
-    const task = guestTasks.find(t => t._id === id);
-    if (!task) return;
-
-    task.completed = !task.completed;
-    localStorage.setItem("guestTasks", JSON.stringify(guestTasks));
-    tasks = guestTasks;
-    renderTasks();
-    return;
-  }
-
-  // Authenticated user
   const task = tasks.find(t => t._id === id);
   if (!task) return;
 
-  await fetch(`${API_URL}/api/tasks/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ completed: !task.completed }),
-  });
+  // Optimistic UI update (instant)
+  task.completed = !task.completed;
+  renderTasks();
 
-  fetchTasks();
+  try {
+    const res = await fetch(`${API_URL}/api/tasks/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ completed: task.completed }),
+    });
+
+    if (!res.ok) throw new Error("Update failed");
+  } catch (err) {
+    // Rollback if backend fails
+    task.completed = !task.completed;
+    renderTasks();
+    console.error("Toggle error:", err);
+  }
 }
 
 async function editTask(id) {
@@ -290,16 +288,20 @@ async function deleteTask(id) {
   }
 } 
 
-addBtn.addEventListener("click", addTask);
+if (addBtn) {
+  addBtn.addEventListener("click", addTask);
+}
 
-filters.forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelector(".filters .active").classList.remove("active");
-    btn.classList.add("active");
-    currentFilter = btn.dataset.filter;
-    renderTasks();
+if (filters.length) {
+  filters.forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelector(".filters .active")?.classList.remove("active");
+      btn.classList.add("active");
+      currentFilter = btn.dataset.filter;
+      renderTasks();
+    });
   });
-});
+}
 
 if (toggleTheme) {
   toggleTheme.addEventListener("click", () => {
