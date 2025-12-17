@@ -23,6 +23,7 @@ if (signupBtn) {
       const username = document.getElementById("username").value.trim();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
+      console.log("SINGUP INPUT:", email, password);
       if (!username || !email || !password) return alert("Enter username, email & password");
       // Email format validation
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -58,6 +59,7 @@ if (loginBtn) {
     try {
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
+      console.log("LOGIN INPUT:", email, password);
       const res = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
