@@ -19,6 +19,8 @@ router.put("/:id", auth, async (req, res) => {
   try {
     const { id } = req.params;
 
+    console.log("REQ.USER =", req.user);
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "Invalid task ID" });
     }
