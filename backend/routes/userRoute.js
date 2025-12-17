@@ -64,15 +64,42 @@ router.post("/forgot-password", async (req, res) => {
 
     const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
+    // ✅ Define emailHtml BEFORE sending
+    const emailHtml = (username, resetLink) => `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Password Reset</title>
+      <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f8; color: #333; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 40px auto; background-color: #fff; border-radius: 8px; padding: 30px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        h1 { font-size: 24px; color: #007bff; margin-bottom: 20px; }
+        p { font-size: 16px; line-height: 1.5; }
+        .btn { display: inline-block; margin-top: 20px; padding: 12px 24px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold; }
+        .btn:hover { background-color: #0056b3; }
+        .footer { margin-top: 30px; font-size: 12px; color: #777; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>Password Reset Request</h1>
+        <p>Hello ${username || "User"},</p>
+        <p>You requested to reset your password for your To-Do List App account. Click the button below to reset it:</p>
+        <a href="${resetLink}" class="btn">Reset Password</a>
+        <p>This link will expire in <strong>15 minutes</strong>.</p>
+        <p>If you didn't request a password reset, please ignore this email. Your account is safe.</p>
+        <div class="footer">&copy; ${new Date().getFullYear()} To-Do List App. All rights reserved.</div>
+      </div>
+    </body>
+    </html>
+    `;
+
     const success = await sendEmail(
       user.email,
       "Password Reset Request",
-      `
-        <p>Hello ${user.username || ""},</p>
-        <p>You requested to reset your password.</p>
-        <a href="${resetLink}">Reset Password</a>
-        <p>This link expires in 15 minutes.</p>
-      `
+      emailHtml(user.username, resetLink) // ✅ use the HTML function here
     );
 
     if (!success) {
