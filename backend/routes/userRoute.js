@@ -32,13 +32,6 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "User not found" });
 
-    console.log("LOGIN PASSWORD:", password);
-    console.log("HASH IN DB:", user.password);
-    console.log(
-      "BCRYPT RESULT:",
-      await bcrypt.compare(password, user.password)
-    );
-
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
@@ -71,7 +64,7 @@ router.post("/forgot-password", async (req, res) => {
 
     const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-    // ✅ Define emailHtml BEFORE sending
+    // Define emailHtml BEFORE sending
     const emailHtml = (username, resetLink) => `
     <!DOCTYPE html>
     <html lang="en">
@@ -106,7 +99,7 @@ router.post("/forgot-password", async (req, res) => {
     const success = await sendEmail(
       user.email,
       "Password Reset Request",
-      emailHtml(user.username, resetLink) // ✅ use the HTML function here
+      emailHtml(user.username, resetLink)
     );
 
     if (!success) {

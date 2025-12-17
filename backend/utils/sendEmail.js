@@ -20,10 +20,10 @@ async function sendEmail(to, subject, htmlContent) {
     return true;
   } catch (error) {
     console.error(
-      "❌ Brevo email failed:",
+      "Brevo email failed:",
       error.response?.text || error.message
     );
-    console.log("🔥 FULL BREVO ERROR:", error);
+    console.log("FULL BREVO ERROR:", error);
     return false;
   }
 }

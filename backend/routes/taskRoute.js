@@ -16,23 +16,28 @@ router.get("/", auth, async (req, res) => {
 });
 
 router.put("/:id", auth, async (req, res) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ message: "Invalid task ID" });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid task ID" });
+    }
+
+    const task = await Task.findOneAndUpdate(
+      { _id: id, userId: req.user.id }, // ✅ FIXED
+      { $set: req.body },
+      { new: true }
+    );
+
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    res.json(task);
+  } catch (err) {
+    console.error("UPDATE TASK ERROR:", err);
+    res.status(500).json({ message: "Server error" });
   }
-
-  const task = await Task.findOneAndUpdate(
-    { _id: id, userId: req.userId },
-    req.body,
-    { new: true }
-  );
-
-  if (!task) {
-    return res.status(404).json({ message: "Task not found" });
-  }
-
-  res.json(task);
 });
 
 router.delete("/:id", auth, async (req, res) => {

@@ -207,7 +207,7 @@ async function addTask() {
 }
 
 async function toggleComplete(id) {
-  // ✅ Guest user
+  // Guest user
   if (!token) {
     const guestTasks = JSON.parse(localStorage.getItem("guestTasks")) || [];
     const task = guestTasks.find(t => t._id === id);
@@ -220,7 +220,7 @@ async function toggleComplete(id) {
     return;
   }
 
-  // ✅ Authenticated user
+  // Authenticated user
   const task = tasks.find(t => t._id === id);
   if (!task) return;
 
@@ -309,8 +309,6 @@ if (toggleTheme) {
       : "🌙 Dark Mode";
   });
 }
-
-// if (token) fetchTasks();
 
 document.addEventListener("DOMContentLoaded", () => {
   fetchTasks();
