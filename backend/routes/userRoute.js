@@ -16,8 +16,7 @@ router.post("/signup", async (req, res) => {
     if (existingUser)
       return res.status(400).json({ message: "User already exists" });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ username, email, password: hashedPassword }); // ✅ hashed
+    const user = new User({ username, email, password });
     await user.save();
 
     res.status(201).json({ message: "User created successfully" });
@@ -146,8 +145,7 @@ router.post("/reset-password/:token", async (req, res) => {
       return res.status(400).json({ message: "Invalid or expired token" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    user.password = hashedPassword;
+    user.password = password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
 
