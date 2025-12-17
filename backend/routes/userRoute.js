@@ -97,24 +97,35 @@ router.post("/reset-password/:token", async (req, res) => {
     const { password } = req.body;
     const { token } = req.params;
 
-    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+    if (!password || password.length < 6) {
+      return res.status(400).json({ message: "Invalid password" });
+    }
+
+    const tokenHash = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
 
     const user = await User.findOne({
       resetPasswordToken: tokenHash,
       resetPasswordExpires: { $gt: Date.now() },
     });
 
-    if (!user)
+    if (!user) {
       return res.status(400).json({ message: "Invalid or expired token" });
+    }
 
-    user.password = password;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
+
     await user.save();
 
-    res.json({ message: "Password reset successful. You can now log in." });
+    res.json({ message: "Password reset successful" });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("RESET PASSWORD ERROR:", err);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
