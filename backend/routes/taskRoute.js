@@ -1,6 +1,8 @@
 const express = require("express");
 const Task = require("../models/task");
 const auth = require("../middleware/authChecker");
+const mongoose = require("mongoose");
+
 const router = express.Router();
 
 router.post("/", auth, async (req, res) => {
@@ -26,7 +28,7 @@ router.put("/:id", auth, async (req, res) => {
     }
 
     const task = await Task.findOneAndUpdate(
-      { _id: id, userId: req.user.userId }, // ✅ FIXED
+      { _id: id, userId: req.userId }, // ✅ FIXED
       { $set: req.body },
       { new: true }
     );
