@@ -23,6 +23,7 @@ async function sendEmail(to, subject, htmlContent) {
       "❌ Brevo email failed:",
       error.response?.text || error.message
     );
+    console.log("🔥 FULL BREVO ERROR:", error);
     return false;
   }
 }
