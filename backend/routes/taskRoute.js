@@ -26,7 +26,7 @@ router.put("/:id", auth, async (req, res) => {
     }
 
     const task = await Task.findOneAndUpdate(
-      { _id: id, userId: req.user.id }, // ✅ FIXED
+      { _id: id, userId: req.user.userId }, // ✅ FIXED
       { $set: req.body },
       { new: true }
     );
