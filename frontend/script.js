@@ -24,11 +24,6 @@ if (signupBtn) {
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
       if (!username || !email || !password) return alert("Enter username, email & password");
-
-            if (!username || !email || !password) {
-        return alert("Please fill all fields");
-      }
-
       // Email format validation
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
@@ -120,7 +115,7 @@ async function fetchTasks() {
 
 function renderTasks() {
   taskList.innerHTML = "";
-  
+
   const filteredTasks = tasks.filter(task => {
     if (currentFilter === "completed") return task.completed;
     if (currentFilter === "pending") return !task.completed;
